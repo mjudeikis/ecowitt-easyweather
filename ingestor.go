@@ -1,52 +1,48 @@
 package main
 
 import (
-	"io/ioutil"
-	"log"
-	"net/http"
+	"context"
+	"fmt"
 	"os"
-	"time"
+	"os/signal"
+
+	"github.com/mjudeikis/weewx-easyweather/pkg/config"
+	"github.com/mjudeikis/weewx-easyweather/pkg/server"
+	"github.com/mjudeikis/weewx-easyweather/pkg/utils/ratelimiter/logger"
 )
 
-func RequestLogger(targetMux http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		start := time.Now()
-
-		targetMux.ServeHTTP(w, r)
-
-		// log request by who(IP address)
-		requesterIP := r.RemoteAddr
-
-		log.Printf(
-			"%s\t\t%s\t\t%s\t\t%v",
-			r.Method,
-			r.RequestURI,
-			requesterIP,
-			time.Since(start),
-		)
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			log.Printf("Error reading body: %v", err)
-			http.Error(w, "can't read body", http.StatusBadRequest)
-			return
-		}
-		log.Println((string(body)))
-	})
-}
-
-func index(w http.ResponseWriter, r *http.Request) {
-	html := ""
-	w.Write([]byte(html))
-}
-
 func main() {
+	ctx := context.Background()
 
-	// direct all log messages to webrequests.log
-	log.SetOutput(os.Stdout)
+	if err := run(ctx); err != nil {
+		fmt.Printf("error starting controller: %v", err)
+		os.Exit(1)
+	}
+}
 
-	log.Println("Start logger")
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", index)
+func run(ctx context.Context) error {
+	c, err := config.Load()
+	if err != nil {
+		return err
+	}
+	log := logger.GetLoggerInstance("", logger.ParseLogLevel(c.LogLevel))
+	log.Info("starting ingestor")
 
-	http.ListenAndServe(":9080", RequestLogger(mux))
+	server, err := server.New(log, c)
+	if err != nil {
+		return err
+	}
+
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt)
+
+	go server.Run(ctx)
+	select {
+	case <-signals:
+		// shutdown
+	case <-ctx.Done():
+		// ctx termination
+	}
+
+	return nil
 }
