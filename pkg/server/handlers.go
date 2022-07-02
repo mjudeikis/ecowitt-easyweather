@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -27,8 +28,13 @@ func (s *Server) ingest(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
-	log.Println((string(body)))
 
+	data := string(body)
+	parts := strings.Split(data, "&")
+	for _, part := range parts {
+		p := strings.Split(part, "=")
+		log.Println(p[0], p[1])
+	}
 }
 
 func (s *Server) metrics(w http.ResponseWriter, r *http.Request) {

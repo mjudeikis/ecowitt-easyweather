@@ -150,14 +150,12 @@ func Log(log *zap.Logger) func(http.Handler) http.Handler {
 				promutil.BytesReceivedCounter.WithLabelValues(path).Add(float64(r.Body.(*logReadCloser).bytes))
 				promutil.BytesTransferredCounter.WithLabelValues(path).Add(float64(w.(*logResponseWriter).bytes))
 
-				if shouldLog(w) {
-					rlog.With(
-						zap.Int("body_read_bytes", r.Body.(*logReadCloser).bytes),
-						zap.Int("body_written_bytes", w.(*logResponseWriter).bytes),
-						zap.Float64("duration", time.Since(t).Seconds()),
-						zap.Int("response_status_code", w.(*logResponseWriter).statusCode),
-					).Warn("sent response")
-				}
+				rlog.With(
+					zap.Int("body_read_bytes", r.Body.(*logReadCloser).bytes),
+					zap.Int("body_written_bytes", w.(*logResponseWriter).bytes),
+					zap.Float64("duration", time.Since(t).Seconds()),
+					zap.Int("response_status_code", w.(*logResponseWriter).statusCode),
+				).Warn("sent response")
 			}()
 			h.ServeHTTP(w, r)
 		})
