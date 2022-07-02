@@ -1,34 +1,33 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"go.uber.org/zap"
+	"time"
 )
 
 func (s *Server) ingest(w http.ResponseWriter, r *http.Request) {
 	//ctx := r.Context()
 	s.log.Info("ingest")
+	start := time.Now()
 
 	s.log.Info(r.RequestURI)
-
+	log.Printf(
+		"%s\t\t%s\t\t%s\t\t%v",
+		r.Method,
+		r.RequestURI,
+		r.RemoteAddr,
+		time.Since(start),
+	)
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error reading body: %v", err)
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
-	data := map[string]interface{}{}
-
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		s.log.Info("Error unmarshalling body", zap.Error(err))
-		return
-	}
+	log.Println((string(body)))
 
 }
 
