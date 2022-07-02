@@ -147,12 +147,14 @@ func (s *Server) setMetrics(m *api.WeatherData) {
 		s.log.Error("Error parsing value", zap.Error(err))
 	}
 	promutil.WeatherStationSolarRadiation.WithLabelValues(m.StationType, m.Model).Set(v)
+	promutil.WeatherStationSolarRadiationTotal.WithLabelValues(m.StationType, m.Model).Add(v)
 
 	v, err = strconv.ParseFloat(m.UV, 64)
 	if err != nil {
 		s.log.Error("Error parsing value", zap.Error(err))
 	}
 	promutil.WeatherStationUV.WithLabelValues(m.StationType, m.Model).Set(v)
+	promutil.WeatherStationUVTotal.WithLabelValues(m.StationType, m.Model).Add(v)
 
 	v, err = strconv.ParseFloat(m.RainRateIn, 64)
 	if err != nil {

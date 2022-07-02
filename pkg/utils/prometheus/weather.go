@@ -18,7 +18,9 @@ func init() {
 	prometheus.MustRegister(WeatherStationWindGustMph)
 	prometheus.MustRegister(WeatherStationMaxDailyGust)
 	prometheus.MustRegister(WeatherStationSolarRadiation)
+	prometheus.MustRegister(WeatherStationSolarRadiationTotal)
 	prometheus.MustRegister(WeatherStationUV)
+	prometheus.MustRegister(WeatherStationUVTotal)
 	prometheus.MustRegister(WeatherStationRainRateIn)
 	prometheus.MustRegister(WeatherStationHourlyRainIn)
 	prometheus.MustRegister(WeatherStationDailyRainIn)
@@ -120,9 +122,23 @@ var (
 		[]string{"weather_station", "model"},
 	)
 
+	WeatherStationSolarRadiationTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "weather_solarradiation_total",
+		Help: "solarradiation total",
+	},
+		[]string{"weather_station", "model"},
+	)
+
 	WeatherStationUV = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "weather_uv",
 		Help: "uv",
+	},
+		[]string{"weather_station", "model"},
+	)
+
+	WeatherStationUVTotal = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "weather_uv_total",
+		Help: "uv total",
 	},
 		[]string{"weather_station", "model"},
 	)

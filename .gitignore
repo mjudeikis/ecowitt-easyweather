@@ -1,2 +1,4 @@
 ./ingestor
 .vscode
+/example/grafana.config
+/example/prometheus.config
