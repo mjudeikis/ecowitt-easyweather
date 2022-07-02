@@ -29,7 +29,7 @@ var (
 
 	BytesTransferredCounter = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "controller_bytes_transferred_total",
+			Name: "server_bytes_transferred_total",
 			Help: "Total number of bytes transferred.",
 		},
 		[]string{"path"},
@@ -37,7 +37,7 @@ var (
 
 	BytesReceivedCounter = prometheus.NewGaugeVec(
 		prometheus.GaugeOpts{
-			Name: "controller_bytes_received_total",
+			Name: "server_bytes_received_total",
 			Help: "Total number of bytes received.",
 		},
 		[]string{"path"},

@@ -10,6 +10,7 @@ import (
 	"github.com/mjudeikis/weewx-easyweather/pkg/config"
 	"github.com/mjudeikis/weewx-easyweather/pkg/utils/ratelimiter"
 	"github.com/mjudeikis/weewx-easyweather/pkg/utils/recover"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )
 
@@ -43,7 +44,7 @@ func New(
 
 	apiRouter := s.router.PathPrefix("/api").Subrouter()
 	apiRouter.HandleFunc("/ingest", s.gRateLimit(s.ingest)).Methods("POST")
-	apiRouter.HandleFunc("/metrics", s.gRateLimit(s.metrics)).Methods("GET")
+	apiRouter.HandleFunc("/metrics", s.gRateLimit(promhttp.Handler().ServeHTTP)).Methods("GET")
 
 	s.server = &http.Server{
 		Addr: config.ServerURI,

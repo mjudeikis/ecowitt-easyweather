@@ -3,60 +3,38 @@ package server
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"reflect"
+	"strconv"
 	"strings"
-	"time"
 
 	"github.com/mjudeikis/weewx-easyweather/pkg/api"
-
-	"github.com/davecgh/go-spew/spew"
+	promutil "github.com/mjudeikis/weewx-easyweather/pkg/utils/prometheus"
+	"go.uber.org/zap"
 )
 
 func (s *Server) ingest(w http.ResponseWriter, r *http.Request) {
 	//ctx := r.Context()
 	s.log.Info("ingest")
-	start := time.Now()
 
-	s.log.Info(r.RequestURI)
-	log.Printf(
-		"%s\t\t%s\t\t%s\t\t%v",
-		r.Method,
-		r.RequestURI,
-		r.RemoteAddr,
-		time.Since(start),
-	)
+	w.WriteHeader(http.StatusOK)
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("Error reading body: %v", err)
+		s.log.Error("Error reading body", zap.Error(err))
 		http.Error(w, "can't read body", http.StatusBadRequest)
 		return
 	}
 
 	data := string(body)
-	spew.Dump(data)
-	metrics := api.WeatherData{}
+	metrics := &api.WeatherData{}
 	parts := strings.Split(data, "&")
 	for _, part := range parts {
 		p := strings.Split(part, "=")
-		setField(&metrics, p[0], p[1])
+		setField(metrics, p[0], p[1])
 	}
 
-	spew.Dump(metrics)
-
-}
-
-func (s *Server) metrics(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	s.log.Info("metrics")
-	// Parse the request body into a struct.
-	//var body api.WeatherData
-
-	values := r.URL.Query()
-	for k, v := range values {
-		fmt.Println(k, " => ", v)
-	}
+	s.setMetrics(metrics)
 
 }
 
@@ -87,4 +65,135 @@ func setField(item interface{}, fieldName string, value interface{}) error {
 	fieldVal := v.Field(fieldNum)
 	fieldVal.Set(reflect.ValueOf(value))
 	return nil
+}
+
+func (s *Server) setMetrics(m *api.WeatherData) {
+	var v float64
+	var err error
+	v, err = strconv.ParseFloat(m.Runtime, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationRuntime.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	//v, err = strconv.ParseFloat(m.DateUTC, 64)
+	//if err != nil {
+	//	s.log.Error("Error parsing value", zap.Error(err))
+	//}
+	//promutil.WeatherStationDateUTC.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.TempInf, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationTemeratureFahrenheit.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.HumidityIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationHumidityIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.BaromRelIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationBaromRelIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.BaromAbsIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationBaromAbsIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.TempF, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationTempF.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.Humidity, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationHumidity.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.WindDir, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationWindDir.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.WindSpeedMph, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationWindSpeedMph.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.WindGustMph, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationWindGustMph.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.MaxDailyGust, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationMaxDailyGust.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.SolarRadiation, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationSolarRadiation.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.UV, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationUV.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.RainRateIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationRainRateIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.HourlyRainIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationHourlyRainIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.DailyRainIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationDailyRainIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.MonthlyRainIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationMonthlyRainIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.YearlyRainIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationYearlyRainIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.TotalRainIn, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationTotalRainIn.WithLabelValues(m.StationType, m.Model).Set(v)
+
+	v, err = strconv.ParseFloat(m.WH65Batt, 64)
+	if err != nil {
+		s.log.Error("Error parsing value", zap.Error(err))
+	}
+	promutil.WeatherStationWH65Batt.WithLabelValues(m.StationType, m.Model).Set(v)
+
 }
