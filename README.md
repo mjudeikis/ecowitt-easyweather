@@ -5,6 +5,10 @@ station data into prometheus so you hook up a prometheus and grafana ontop of it
 
 Example dashboard: https://weather.linkmenu58.lt/
 
+Note: Ecowitt weather station can "send" data only to port `80` and no TLS is
+possible. So when configuring your station to `POST` data, make sure its deployed
+with non-TLS URL! I know... no TLS in 202x...
+
 Deployment using [synpse.NET](https://synpse.net):
 ```
 name: easyweather
