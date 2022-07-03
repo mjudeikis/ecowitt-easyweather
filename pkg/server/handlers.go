@@ -160,7 +160,8 @@ func (s *Server) setMetrics(m *api.WeatherData) {
 	if err != nil {
 		s.log.Error("Error parsing value", zap.Error(err))
 	}
-	promutil.WeatherStationRainRateIn.WithLabelValues(m.StationType, m.Model).Set(v)
+	promutil.WeatherStationRainRateIn.Reset()
+	promutil.WeatherStationRainRateIn.WithLabelValues(m.StationType, m.Model).Add(v)
 
 	v, err = strconv.ParseFloat(m.HourlyRainIn, 64)
 	if err != nil {

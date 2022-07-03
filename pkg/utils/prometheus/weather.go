@@ -143,7 +143,7 @@ var (
 		[]string{"weather_station", "model"},
 	)
 
-	WeatherStationRainRateIn = prometheus.NewGaugeVec(prometheus.GaugeOpts{
+	WeatherStationRainRateIn = prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "weather_rainratein",
 		Help: "rainratein",
 	},
