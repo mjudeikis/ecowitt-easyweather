@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/zap"
 
-	promutil "github.com/mjudeikis/weewx-easyweather/pkg/utils/prometheus"
+	promutil "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/prometheus"
 )
 
 // Panic recovers a panic

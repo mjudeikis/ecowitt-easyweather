@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: mjudeikis/weewx-easyweather
+  IMAGE_NAME: mjudeikis/ecowitt-easyweather
 
 jobs:
   build-and-push-image:

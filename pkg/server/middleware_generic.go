@@ -17,10 +17,10 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/mjudeikis/weewx-easyweather/pkg/api"
-	errutils "github.com/mjudeikis/weewx-easyweather/pkg/utils/error"
-	logutil "github.com/mjudeikis/weewx-easyweather/pkg/utils/log"
-	promutil "github.com/mjudeikis/weewx-easyweather/pkg/utils/prometheus"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/api"
+	errutils "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/error"
+	logutil "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/log"
+	promutil "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/prometheus"
 )
 
 type contextKey int

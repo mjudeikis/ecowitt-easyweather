@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/mjudeikis/weewx-easyweather/pkg/config"
-	"github.com/mjudeikis/weewx-easyweather/pkg/utils/ratelimiter"
-	"github.com/mjudeikis/weewx-easyweather/pkg/utils/recover"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/config"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/utils/ratelimiter"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/utils/recover"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.uber.org/zap"
 )

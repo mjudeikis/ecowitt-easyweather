@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	errutils "github.com/mjudeikis/weewx-easyweather/pkg/utils/error"
-	"github.com/mjudeikis/weewx-easyweather/pkg/utils/ratelimiter"
+	errutils "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/error"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/utils/ratelimiter"
 	"go.uber.org/zap"
 )
 

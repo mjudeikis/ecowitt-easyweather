@@ -1,4 +1,4 @@
-module github.com/mjudeikis/weewx-easyweather
+module github.com/mjudeikis/ecowitt-easyweather
 
 go 1.18
 

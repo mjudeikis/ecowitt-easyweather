@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	errutils "github.com/mjudeikis/weewx-easyweather/pkg/utils/error"
+	errutils "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/error"
 )
 
 const (

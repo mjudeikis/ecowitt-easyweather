@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/mjudeikis/weewx-easyweather/pkg/api"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/api"
 	"go.uber.org/zap"
 )
 

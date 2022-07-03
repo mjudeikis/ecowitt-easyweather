@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/mjudeikis/weewx-easyweather/pkg/api"
-	promutil "github.com/mjudeikis/weewx-easyweather/pkg/utils/prometheus"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/api"
+	promutil "github.com/mjudeikis/ecowitt-easyweather/pkg/utils/prometheus"
 	"go.uber.org/zap"
 )
 

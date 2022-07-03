@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/mjudeikis/weewx-easyweather/pkg/config"
-	"github.com/mjudeikis/weewx-easyweather/pkg/server"
-	"github.com/mjudeikis/weewx-easyweather/pkg/utils/ratelimiter/logger"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/config"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/server"
+	"github.com/mjudeikis/ecowitt-easyweather/pkg/utils/ratelimiter/logger"
 )
 
 func main() {
